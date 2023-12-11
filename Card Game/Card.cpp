@@ -2,8 +2,9 @@
 #include <string>
 using namespace std;
 
-Card::Card(string suit, int value) {
+Card::Card(string suit, string symbol, int value) {
 	this->suit = suit;
+	this->symbol = symbol;
 	this->value = value;
 }
 

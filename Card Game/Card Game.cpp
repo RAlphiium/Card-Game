@@ -3,12 +3,46 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <Windows.h>
 using namespace std;
 #include "Card.h"
+#include "Blackjack.h"
 
-void Blackjack() {
+//Create a class called blackjack that will run blackjack
+//Would need to create a void function that will take a vector as a parameter, take the length of the vector and output (cout) all items to display).
+
+void BlackjackGame() {
+    vector<Card> cardDeck = createDeck();
+    Blackjack test(cardDeck);
     cout << "I put the new Forgis on the Jeep.";
+}
+vector<Card> createDeck() {
+    vector<Card> cardDeck;
+    string suit;
+    int value;
+    for (int i = 0; i < 4; i++) {
+        switch (i) {        //Iterates for all suits.
+        case 0: 
+            suit = "C";     //Clubs
+            break;
+        case 1:
+            suit = "D";     //Diamonds
+            break;
+        case 2:
+            suit = "H";     //Hearts
+            break;
+        case 3:
+            suit = "S";     //Spades
+            break;
+        }
+
+
+        for (int i = 0; i < 9; i++) {
+            value = i + 2;
+            Card card(suit, string(value), value);
+        }
+    }
 }
 
 int main()
@@ -31,10 +65,11 @@ int main()
 
     if (choice == "Blackjack") {
         system("CLS");
-        Blackjack();
+        BlackjackGame();
     }
     else if (choice == "Solitaire") {
         system("CLS");
         cout << "There is nothing here yet.";
     }
+    return 0;
 }

@@ -5,9 +5,10 @@ using namespace std;
 class Card{
 private:
 	string suit;
+	string symbol;
 	int value;
 public:
-	Card(string suit,int value);
+	Card(string suit,string symbol,int value);
 
 	string returnSuit();
 	int returnValue();
