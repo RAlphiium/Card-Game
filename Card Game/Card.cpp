@@ -11,6 +11,9 @@ Card::Card(string suit, string symbol, int value) {
 string Card::returnSuit() {
 	return this->suit;
 }
+string Card::returnSymbol() {
+	return this->symbol;
+}
 int Card::returnValue() {
 	return this->value;
 }

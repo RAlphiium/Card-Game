@@ -11,6 +11,8 @@ private:
 public:
 	Blackjack(vector<Card> cardDeck);
 
+	void outputCardDeck();					//This displays all of the possible cards in the Playing Card Suit Deck.
+
 	vector<Card> returnCardDeck();
 	vector<Card> returnShuffledDeck();
 };

@@ -11,6 +11,7 @@ public:
 	Card(string suit,string symbol,int value);
 
 	string returnSuit();
+	string returnSymbol();
 	int returnValue();
 };
 

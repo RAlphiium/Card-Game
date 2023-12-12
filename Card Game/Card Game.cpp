@@ -9,21 +9,21 @@ using namespace std;
 #include "Card.h"
 #include "Blackjack.h"
 
-//Create a class called blackjack that will run blackjack
-//Would need to create a void function that will take a vector as a parameter, take the length of the vector and output (cout) all items to display).
-
-void BlackjackGame() {
-    vector<Card> cardDeck = createDeck();
-    Blackjack test(cardDeck);
-    cout << "I put the new Forgis on the Jeep.";
-}
+// This function essentially creates all the cards in Playing Cards Suit by using:
+//      - A for loop that will iterate four times - This is done in order to create the 13 cards for each suit.
+//          - This is done by changing the value for the String Variable: suit, to the respective value of the current iteration.
+//      - Series of instantiations using the class "Card" and inputting arguments for the Card's Suit,Symbol and Value.
+//          - A for loop and series of lines of code has been used to achieve this.
+//      - All of these are pushed onto the vector, containing Cards, cardDeck after instantiation.
+//      - After the for loop concludes, the function return cardDeck.
 vector<Card> createDeck() {
     vector<Card> cardDeck;
     string suit;
+    string symbol;
     int value;
     for (int i = 0; i < 4; i++) {
         switch (i) {        //Iterates for all suits.
-        case 0: 
+        case 0:
             suit = "C";     //Clubs
             break;
         case 1:
@@ -37,12 +37,41 @@ vector<Card> createDeck() {
             break;
         }
 
-
+        //Generating Ace card
+        value = 1;
+        symbol = "A";
+        Card card1(suit, symbol, value);
+        cardDeck.push_back(card1);
+        //Generating cards number 2-10
         for (int i = 0; i < 9; i++) {
             value = i + 2;
-            Card card(suit, string(value), value);
+            symbol = to_string(value);
+            Card card(suit, symbol, value);
+            cardDeck.push_back(card);
         }
+        //Generating Jack card
+        value = 11;
+        symbol = "J";
+        Card card2(suit, symbol, value);
+        cardDeck.push_back(card2);
+        //Generating Queen card
+        value = 12;
+        symbol = "Q";
+        Card card3(suit, symbol, value);
+        cardDeck.push_back(card3);
+        //Generating King card
+        value = 13;
+        symbol = "K";
+        Card card4(suit, symbol, value);
+        cardDeck.push_back(card4);
     }
+    return cardDeck;
+}
+void BlackjackGame() {
+    vector<Card> cardDeck = createDeck();
+    Blackjack test(cardDeck);
+    test.outputCardDeck();
+    cout << "I put the new Forgis on the Jeep.";
 }
 
 int main()
