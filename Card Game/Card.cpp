@@ -6,6 +6,7 @@ Card::Card(string suit, string symbol, int value) {
 	this->suit = suit;
 	this->symbol = symbol;
 	this->value = value;
+	this->orientation = false;
 }
 
 string Card::returnSuit() {
@@ -16,4 +17,7 @@ string Card::returnSymbol() {
 }
 int Card::returnValue() {
 	return this->value;
+}
+bool Card::returnOrientation() {
+	return this->orientation;
 }

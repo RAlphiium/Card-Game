@@ -50,17 +50,17 @@ vector<Card> createDeck() {
             cardDeck.push_back(card);
         }
         //Generating Jack card
-        value = 11;
+        value = 10;
         symbol = "J";
         Card card2(suit, symbol, value);
         cardDeck.push_back(card2);
         //Generating Queen card
-        value = 12;
+        value = 10;
         symbol = "Q";
         Card card3(suit, symbol, value);
         cardDeck.push_back(card3);
         //Generating King card
-        value = 13;
+        value = 10;
         symbol = "K";
         Card card4(suit, symbol, value);
         cardDeck.push_back(card4);
@@ -71,6 +71,7 @@ void BlackjackGame() {
     vector<Card> cardDeck = createDeck();
     Blackjack test(cardDeck);
     test.outputCardDeck();
+    test.shuffleCardDeck();
     cout << "I put the new Forgis on the Jeep.";
 }
 
