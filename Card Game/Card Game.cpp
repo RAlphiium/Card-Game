@@ -24,16 +24,16 @@ vector<Card> createDeck() {
     for (int i = 0; i < 4; i++) {
         switch (i) {        //Iterates for all suits.
         case 0:
-            suit = "C";     //Clubs
+            suit = "Clubs";     //Clubs
             break;
         case 1:
-            suit = "D";     //Diamonds
+            suit = "Diamonds";     //Diamonds
             break;
         case 2:
-            suit = "H";     //Hearts
+            suit = "Hearts";     //Hearts
             break;
         case 3:
-            suit = "S";     //Spades
+            suit = "Spades";     //Spades
             break;
         }
 
@@ -71,7 +71,7 @@ void BlackjackGame() {
     vector<Card> cardDeck = createDeck();
     Blackjack test(cardDeck);
     test.outputCardDeck();
-    test.shuffleCardDeck();
+    test.shuffleCards();
     cout << "I put the new Forgis on the Jeep.";
 }
 
