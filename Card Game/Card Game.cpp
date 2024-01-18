@@ -5,9 +5,13 @@
 #include <string>
 #include <vector>
 #include <Windows.h>
-using namespace std;
+#include <chrono>
+#include <thread>
 #include "Card.h"
 #include "Blackjack.h"
+using namespace std::this_thread;
+using namespace std::chrono;
+using namespace std;
 
 // This function essentially creates all the cards in Playing Cards Suit by using:
 //      - A for loop that will iterate four times - This is done in order to create the 13 cards for each suit.
@@ -16,6 +20,13 @@ using namespace std;
 //          - A for loop and series of lines of code has been used to achieve this.
 //      - All of these are pushed onto the vector, containing Cards, cardDeck after instantiation.
 //      - After the for loop concludes, the function return cardDeck.
+
+void typeText(const string& text, int delayMilliseconds) {
+    for (char c : text) {
+        cout << c << flush;
+        sleep_for(milliseconds(delayMilliseconds));
+    }
+}
 vector<Card> createDeck() {
     vector<Card> cardDeck;
     string suit;
@@ -69,10 +80,14 @@ vector<Card> createDeck() {
 }
 void BlackjackGame() {
     vector<Card> cardDeck = createDeck();
-    Blackjack test(cardDeck);
-    test.outputCardDeck();
-    test.shuffleCards();
-    cout << "I put the new Forgis on the Jeep.";
+    Blackjack blackjack(cardDeck);
+    Player player("string");
+
+    blackjack.shuffleCards();
+    blackjack.startGame(player);
+
+    blackjack.displayCards();
+    player.displayCards();
 }
 
 int main()
@@ -80,20 +95,27 @@ int main()
     string choice;
 
     do {
-        if (choice.length() == 0) {
-            system("CLS");
-        }
-        else if (choice != "Blackjack" && choice != "Solitaire") {
-            cout << "Invalid input, retry.";
+        typeText("What game do you want to play?\n",30);
+        typeText("> Blackjack\n> Solitaire\n\nType the name of the game that you want to play: ",30);
+        getline(cin, choice);
+        if (choice.empty()) {
+            typeText("\nInvalid input, retry.", 30);
             Sleep(1500);
             system("CLS");
         }
-        cout << "What game do you want to play?\n";
-        cout << "> Blackjack\n> Solitaire\n\nType the name of the game that you want to play: ";
-        getline(cin, choice);
+        else if (choice != "Blackjack" && choice != "Solitaire") {
+            typeText("\nInvalid input, retry.", 30);
+            Sleep(1500);
+            system("CLS");
+        }
     } while (choice != "Blackjack" && choice != "Solitaire");
 
     if (choice == "Blackjack") {
+        typeText("\nSetting up Blackjack", 30);
+        for (int i = 0; i < 3; i++) {
+            cout << ".";
+            Sleep(1000);
+        }
         system("CLS");
         BlackjackGame();
     }
