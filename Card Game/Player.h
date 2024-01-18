@@ -6,6 +6,7 @@
 class Player {
 private:
 	vector<Card> deck;
+	bool turnConcluded;
 public:
 	Player(string string);
 
@@ -13,6 +14,10 @@ public:
 	void displayCards();
 	void appendCard(Card card);
 	void viewDeck();
+	void toggleTurnConcluded();
 
+	int returnDeckValue();
 	vector<Card> returnDeck();
+	bool returnTurnConcluded();
+	Card returnCard(int i);
 };

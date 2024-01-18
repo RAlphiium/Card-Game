@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <thread>
+#include <Windows.h>
 #include "Blackjack.h"
 #include "Card.h"
 using namespace std::this_thread;
@@ -19,6 +20,11 @@ void Blackjack::typeText(const string& text, int delayMilliseconds) {
 		cout << c << flush;
 		sleep_for(milliseconds(delayMilliseconds));
 	}
+}
+
+void Blackjack::updateVisuals(Player& player) {
+	displayCards();
+	player.displayCards();
 }
 
 void Blackjack::displayCards() {
@@ -48,11 +54,13 @@ void Blackjack::displayCards() {
 	for (int i = 0; i < asciiStrings.size(); i++) {
 		cout << asciiStrings[i];
 	}
+	typeText("Dealer's deck value: " + to_string(returnDealerDeckValue()) + "\n", 30);
 	cout << '\n';
 }
 
 void Blackjack::startGame(Player &player) {						
 	typeText("Dealer: Now dealing us our cards.\n",30);
+	string choice;
 	
 	for (int i = 0; i < 2; i++) {
 		player.appendCard(this->shuffledCards.top());
@@ -60,6 +68,39 @@ void Blackjack::startGame(Player &player) {
 		appendCard(this->shuffledCards.top());
 		this->shuffledCards.pop();
 	}
+
+	do {
+		updateVisuals(player);
+		typeText("Dealer: It is your turn. Hit or Stand? ", 30);
+		getline(cin, choice);
+		
+		if (choice == "Hit") {
+			player.appendCard(this->shuffledCards.top());
+			this->shuffledCards.pop();
+			system("CLS");
+			typeText("Dealer: You have received a [" + player.returnCard(player.returnDeck().size() - 1).returnSymbol() + " of " + player.returnCard(player.returnDeck().size() - 1).returnSuit() + "].\n", 30);
+		}
+		else if (choice == "Stand") {
+			player.toggleTurnConcluded();
+		}
+		else if (choice.empty()) {
+			typeText("Dealer: You gotta make a choice. Try again.",30);
+			Sleep(1500);
+			system("CLS");
+		}
+		else if (choice != "Hit" && choice != "Stand") {
+			typeText("Dealer: Invalid choice. Try again.",30);
+			Sleep(1500);
+			system("CLS");
+		}
+	} while (player.returnTurnConcluded() == false);
+
+	typeText("Dealer: Uh", 30);
+	for (int i = 0; i < 3; i++) {
+		cout << ".";
+		Sleep(1000);
+	}
+	typeText("\nDealer: This is all so far.", 30);
 }
 
 void Blackjack::appendCard(Card card) {
@@ -104,6 +145,13 @@ void Blackjack::shuffleCards() {
 	typeText("Dealer: The cards have been shuffled.\n",30);
 }
 
+int Blackjack::returnDealerDeckValue() {
+	int value = 0;
+	for (int i = 0; i < this->dealerDeck.size(); i++) {
+		value = value + this->dealerDeck[i].returnValue();
+	}
+	return value;
+}
 vector<Card> Blackjack::returnCardDeck() {
 	return this->cardDeck;
 }

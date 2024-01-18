@@ -12,6 +12,7 @@ using namespace std;
 
 Player::Player(string string) {
 	this->deck = {};
+	this->turnConcluded = false;
 }
 
 void Player::typeText(const string& text, int delayMilliseconds) {
@@ -48,6 +49,7 @@ void Player::displayCards() {
 	for (int i = 0; i < asciiStrings.size(); i++) {
 		cout << asciiStrings[i];
 	}
+	typeText("Player's deck value: " + to_string(returnDeckValue()) + "\n", 30);
 	cout << '\n';
 }
 
@@ -61,6 +63,25 @@ void Player::viewDeck() {							//Used to debug.
 	}
 }
 
+void Player::toggleTurnConcluded() {
+	this->turnConcluded = !(this->turnConcluded);
+}
+
+
+int Player::returnDeckValue() {
+	int value = 0;
+	for (int i = 0; i < this->deck.size(); i++) {
+		value = value + this->deck[i].returnValue();
+	}
+	return value;
+}
 vector<Card> Player::returnDeck() {
 	return this->deck;
+}
+
+bool Player::returnTurnConcluded() {
+	return this->turnConcluded;
+}
+Card Player::returnCard(int i) {
+	return this->deck[i];
 }

@@ -15,6 +15,7 @@ public:
 	Blackjack(vector<Card> cardDeck);
 
 	void typeText(const string& text, int delayMilliseconds);
+	void updateVisuals(Player& player);
 	void displayCards();
 	void startGame(Player &player);
 	void appendCard(Card card);
@@ -22,6 +23,7 @@ public:
 	void outputCardDeck();					//This displays all of the possible cards in the Playing Card Suit Deck.
 	void shuffleCards();					//This will update the shuffledDeck attribute by shuffling the cardDeck attribute, store it in a local variable and change its value.
 
+	int returnDealerDeckValue();
 	vector<Card> returnCardDeck();
 	stack<Card> returnShuffledCards();
 };
