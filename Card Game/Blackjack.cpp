@@ -11,10 +11,14 @@ using namespace std::this_thread;
 using namespace std::chrono;
 using namespace std;
 
+//Constructor for Blackjack/
 Blackjack::Blackjack(vector<Card> cardDeck) {
 	this->cardDeck = cardDeck;
 	this->dealerDeck = {};
+	this->turnConcluded = false;
 }
+
+//Typing effect method.
 void Blackjack::typeText(const string& text, int delayMilliseconds) {
 	for (char c : text) {
 		cout << c << flush;
@@ -22,11 +26,13 @@ void Blackjack::typeText(const string& text, int delayMilliseconds) {
 	}
 }
 
+//This displays both dealer's and player's cards separately.
 void Blackjack::updateVisuals(Player& player) {
 	displayCards();
 	player.displayCards();
 }
 
+//This displays all of the dealer's cards horizontally.
 void Blackjack::displayCards() {
 	vector<Card> temp = this->dealerDeck;								//In order to not change the actual card data.
 	int asciiCardSize = this->dealerDeck[0].returnAsciiCard().size();	//No. of lines in ascii card.
@@ -58,10 +64,13 @@ void Blackjack::displayCards() {
 	cout << '\n';
 }
 
+//Blackjack's start method.
 void Blackjack::startGame(Player &player) {						
-	typeText("Dealer: Now dealing us our cards.\n",30);
+	typeText("Dealer: I will now deal the cards.\n",30);
+	Sleep(1500);
 	string choice;
 	
+	//Appends a card to the player then the dealer. Iterates 2 times so that both have 2 cards each.
 	for (int i = 0; i < 2; i++) {
 		player.appendCard(this->shuffledCards.top());
 		this->shuffledCards.pop();
@@ -70,30 +79,28 @@ void Blackjack::startGame(Player &player) {
 	}
 
 	do {
-		updateVisuals(player);
-		typeText("Dealer: It is your turn. Hit or Stand? ", 30);
-		getline(cin, choice);
-		
-		if (choice == "Hit") {
-			player.appendCard(this->shuffledCards.top());
-			this->shuffledCards.pop();
-			system("CLS");
-			typeText("Dealer: You have received a [" + player.returnCard(player.returnDeck().size() - 1).returnSymbol() + " of " + player.returnCard(player.returnDeck().size() - 1).returnSuit() + "].\n", 30);
+		hitStandPhase(player);
+
+		cout << '\n';
+
+
+		if (returnDealerDeckValue() > 21 && player.returnDeckValue() <= 21) {
+			typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
+			getline(cin, choice);
 		}
-		else if (choice == "Stand") {
-			player.toggleTurnConcluded();
+		else if ((returnDealerDeckValue() <= 21 && returnDealerDeckValue() >= player.returnDeckValue()) || player.returnDeckValue() > 21) {
+			typeText("Dealer: Looks like I won.\nDealer: Want to play again? ", 30);
+			getline(cin, choice);
 		}
-		else if (choice.empty()) {
-			typeText("Dealer: You gotta make a choice. Try again.",30);
-			Sleep(1500);
-			system("CLS");
-		}
-		else if (choice != "Hit" && choice != "Stand") {
-			typeText("Dealer: Invalid choice. Try again.",30);
-			Sleep(1500);
-			system("CLS");
-		}
-	} while (player.returnTurnConcluded() == false);
+		//if ((player.returnDeckValue() <= 21) && (player.returnDeckValue() > returnDealerDeckValue())) {					//ERROR with if statement, fix this.
+		//	typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
+		//	getline(cin, choice);
+		//}
+		//else if(player.returnDeckValue() == returnDealerDeckValue() || player.returnDeckValue() > 21){
+		//	typeText("Dealer: Looks like I  won.\nWant to play again? ", 30);
+		//	getline(cin, choice);
+		//}
+	} while (choice.empty() || choice == "Continue" || choice == "continue");
 
 	typeText("Dealer: Uh", 30);
 	for (int i = 0; i < 3; i++) {
@@ -101,13 +108,74 @@ void Blackjack::startGame(Player &player) {
 		Sleep(1000);
 	}
 	typeText("\nDealer: This is all so far.", 30);
+
 }
 
+void Blackjack::hitStandPhase(Player& player) {
+	string choice;
+
+	//Loop for player.
+	do {
+		updateVisuals(player);
+		typeText("Dealer: It is your turn. Hit or Stand? ", 30);
+		getline(cin, choice);
+
+		if (choice == "Hit" || choice == "hit") {
+			player.appendCard(this->shuffledCards.top());
+			this->shuffledCards.pop();
+			system("CLS");
+			typeText("Dealer: You have received a [" + player.returnCard(player.returnDeck().size() - 1).returnSymbol() + " of " + player.returnCard(player.returnDeck().size() - 1).returnSuit() + "].\n", 30);
+			Sleep(1500);
+		}
+		else if (choice == "Stand" || choice == "stand") {
+			system("CLS");
+			player.toggleTurnConcluded();
+		}
+		else if (choice.empty()) {
+			typeText("Dealer: You gotta make a choice. Try again.", 30);
+			Sleep(1500);
+			system("CLS");
+		}
+		else if (choice != "Hit" && choice != "Stand") {
+			typeText("Dealer: Invalid choice. Try again.", 30);
+			Sleep(1500);
+			system("CLS");
+		}
+	} while (player.returnTurnConcluded() == false);
+
+
+	//Loop for dealer.
+	do {
+		updateVisuals(player);
+		typeText("Dealer: It is my turn.\n", 30);
+		Sleep(1500);
+		if (returnDealerDeckValue() < player.returnDeckValue() && player.returnDeckValue() <= 21) {
+			typeText("Dealer: I will hit.\n", 30);
+			Sleep(1500);
+			appendCard(this->shuffledCards.top());
+			this->shuffledCards.pop();
+			system("CLS");
+			typeText("Dealer: Looks like I received a [" + returnCard(this->dealerDeck.size() - 1).returnSymbol() + " of " + returnCard(this->dealerDeck.size() - 1).returnSuit() + "].\n", 30);
+			Sleep(1500);
+		}
+		else {
+			typeText("Dealer: I will stand.\n", 30);
+			Sleep(1500);
+			toggleTurnConcluded();
+		}
+	} while (this->turnConcluded == false);
+
+	player.toggleTurnConcluded();
+	toggleTurnConcluded();
+}
+
+//Adds a card onto dealer's deck.
 void Blackjack::appendCard(Card card) {
 	this->dealerDeck.push_back(card);
 }
 
-void Blackjack::viewDealerDeck() {							//Used to debug.
+//A Debugger method. Used to check the dealer's cards and their properties.
+void Blackjack::viewDealerDeck() {	
 	cout << "Dealer's hand: \n";
 	for (int i = 0; i < this->dealerDeck.size(); i++) {
 		cout << "Suit/Symbol/Value = " << this->dealerDeck[i].returnSuit() << "/" << this->dealerDeck[i].returnSymbol() << "/" << this->dealerDeck[i].returnValue() << '\n';
@@ -143,8 +211,15 @@ void Blackjack::shuffleCards() {
 	//	this->shuffledCards.pop();
 	//}
 	typeText("Dealer: The cards have been shuffled.\n",30);
+	Sleep(1500);
 }
 
+//NOTs the turnConcluded value when called.
+void Blackjack::toggleTurnConcluded() {
+	this->turnConcluded = !(this->turnConcluded);
+}
+
+//Returns dealerDeck Attribute.
 int Blackjack::returnDealerDeckValue() {
 	int value = 0;
 	for (int i = 0; i < this->dealerDeck.size(); i++) {
@@ -152,9 +227,27 @@ int Blackjack::returnDealerDeckValue() {
 	}
 	return value;
 }
+
+//Returns cardDeck Attribute.
 vector<Card> Blackjack::returnCardDeck() {
 	return this->cardDeck;
 }
+
+vector<Card> Blackjack::returnDealerDeck() {
+	return this->dealerDeck;
+}
+
+//Returns shuffledCards Attribute.
 stack<Card> Blackjack::returnShuffledCards() {
 	return this->shuffledCards;
+}
+
+//Returns turnConcluded Attribute.
+bool Blackjack::returnTurnConcluded() {
+	return this->turnConcluded;
+}
+
+//Returns Card from deck Attribute specified at index: i.
+Card Blackjack::returnCard(int i) {
+	return this->dealerDeck[i];
 }

@@ -10,14 +10,14 @@ private:
 public:
 	Player(string string);
 
-	void typeText(const string& text, int delayMilliseconds);
-	void displayCards();
-	void appendCard(Card card);
-	void viewDeck();
-	void toggleTurnConcluded();
+	void typeText(const string& text, int delayMilliseconds);		//Typing effect method.
+	void displayCards();											//This displays all of the player's cards horizontally.
+	void appendCard(Card card);										//Adds a card onto player's deck.
+	void viewDeck();												//A Debugger method. Used to check the dealer's cards and their properties.
+	void toggleTurnConcluded();										//NOTs the turnConcluded value when called.
 
-	int returnDeckValue();
-	vector<Card> returnDeck();
-	bool returnTurnConcluded();
-	Card returnCard(int i);
+	int returnDeckValue();											//Returns deck's total value.
+	vector<Card> returnDeck();										//Returns deck Attribute.
+	bool returnTurnConcluded();										//Returns turnConcluded Attribute.
+	Card returnCard(int i);											//Returns Card from deck Attribute specified at index: i.
 };

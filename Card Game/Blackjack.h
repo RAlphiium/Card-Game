@@ -11,20 +11,26 @@ private:
 	vector<Card> cardDeck;
 	stack<Card> shuffledCards;
 	vector<Card> dealerDeck;
+	bool turnConcluded;
 public:
 	Blackjack(vector<Card> cardDeck);
 
-	void typeText(const string& text, int delayMilliseconds);
-	void updateVisuals(Player& player);
-	void displayCards();
-	void startGame(Player &player);
-	void appendCard(Card card);
-	void viewDealerDeck();
-	void outputCardDeck();					//This displays all of the possible cards in the Playing Card Suit Deck.
-	void shuffleCards();					//This will update the shuffledDeck attribute by shuffling the cardDeck attribute, store it in a local variable and change its value.
+	void typeText(const string& text, int delayMilliseconds);	//Typing effect method.
+	void updateVisuals(Player& player);							//This displays both dealer's and player's cards separately.
+	void displayCards();										//This displays all of the dealer's cards horizontally.
+	void startGame(Player &player);								//Blackjack's start method.
+	void hitStandPhase(Player& player);							//Hit Stand phase of the game.
+	void appendCard(Card card);									//Adds a card onto dealer's deck.
+	void viewDealerDeck();										//A Debugger method. Used to check the dealer's cards and their properties.
+	void outputCardDeck();										//This displays all of the possible cards in the Playing Card Suit Deck.
+	void shuffleCards();										//This will update the shuffledDeck attribute by shuffling the cardDeck attribute, store it in a local variable and change its value.
+	void toggleTurnConcluded();									//NOTs the turnConcluded value when called.
 
-	int returnDealerDeckValue();
-	vector<Card> returnCardDeck();
-	stack<Card> returnShuffledCards();
+	int returnDealerDeckValue();								//Returns dealerDeck Attribute.
+	vector<Card> returnDealerDeck();
+	vector<Card> returnCardDeck();								//Returns cardDeck Attribute.
+	stack<Card> returnShuffledCards();							//Returns shuffledCards Attribute.
+	bool returnTurnConcluded();									//Returns turnConcluded Attribute.
+	Card returnCard(int i);										//Returns Card from deck Attribute specified at index: i.
 };
 

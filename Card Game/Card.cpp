@@ -3,6 +3,7 @@
 #include <string>
 using namespace std;
 
+//Constructor for Card.
 Card::Card(string suit, string symbol, int value) {
     this->suit = suit;
     this->symbol = symbol;
@@ -11,19 +12,21 @@ Card::Card(string suit, string symbol, int value) {
     this->asciiCard = createAscii();
 }
 
-//Removes all \n from strings in asciiCard
+//Removes all skip lines (\n) from all strings in the asciiCard vector list.
 void Card::eraseLine() {
     for (int i = 0; i < this->asciiCard.size(); i++) {
         this->asciiCard[i].erase(this->asciiCard[i].size() - 1);
     }
 }
 
+//Displays ascii art of card.
 void Card::displayCard() {
     for (int i = 0; i < this->asciiCard.size(); i++) {
         cout << this->asciiCard[i];
     }
 }
 
+//Creates ascii art of card, putting in the card's suit and symbol.
 vector<string> Card::createAscii() {
     vector<string> temp = {};
     string suitSymbol;
@@ -65,21 +68,32 @@ vector<string> Card::createAscii() {
     return temp;
 }
 
+//Returns suit Attribute.
 string Card::returnSuit() {
     return this->suit;
 }
+
+//Returns symbol Attribute.
 string Card::returnSymbol() {
     return this->symbol;
 }
+
+//Returns value Attribute.
 int Card::returnValue() {
     return this->value;
 }
+
+//Returns value Attribute.
 bool Card::returnOrientation() {
     return this->orientation;
 }
+
+//Returns asciiCard Attribute.
 vector<string> Card::returnAsciiCard() {
     return this->asciiCard;
 }
+
+//Returns an element in asciiCard specified at index: i.
 string Card::returnAsciiLine(int i) {
     return this->asciiCard[i];
 }
