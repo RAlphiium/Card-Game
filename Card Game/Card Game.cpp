@@ -101,14 +101,14 @@ int main()
             Sleep(1500);
             system("CLS");
         }
-        else if (choice != "Blackjack" && choice != "Solitaire") {
+        else if (choice != "Blackjack" && choice != "blackjack" && choice != "Solitaire" && choice != "solitaire") {
             typeText("\nInvalid input, retry.", 30);
             Sleep(1500);
             system("CLS");
         }
-    } while (choice != "Blackjack" && choice != "Solitaire");
+    } while (choice != "Blackjack" && choice != "blackjack" && choice != "Solitaire" && choice != "solitaire");
 
-    if (choice == "Blackjack") {
+    if (choice == "Blackjack" || choice == "blackjack") {
         typeText("\nSetting up Blackjack", 30);
         for (int i = 0; i < 3; i++) {
             cout << ".";
@@ -117,7 +117,7 @@ int main()
         system("CLS");
         BlackjackGame();
     }
-    else if (choice == "Solitaire") {
+    else if (choice == "Solitaire" || choice == "solitiare") {
         system("CLS");
         cout << "There is nothing here yet.";
     }

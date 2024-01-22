@@ -79,28 +79,28 @@ void Blackjack::startGame(Player &player) {
 	}
 
 	do {
+		system("CLS");
 		hitStandPhase(player);
 
 		cout << '\n';
 
-
-		if (returnDealerDeckValue() > 21 && player.returnDeckValue() <= 21) {
-			typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
-			getline(cin, choice);
-		}
-		else if ((returnDealerDeckValue() <= 21 && returnDealerDeckValue() >= player.returnDeckValue()) || player.returnDeckValue() > 21) {
-			typeText("Dealer: Looks like I won.\nDealer: Want to play again? ", 30);
-			getline(cin, choice);
-		}
-		//if ((player.returnDeckValue() <= 21) && (player.returnDeckValue() > returnDealerDeckValue())) {					//ERROR with if statement, fix this.
-		//	typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
-		//	getline(cin, choice);
-		//}
-		//else if(player.returnDeckValue() == returnDealerDeckValue() || player.returnDeckValue() > 21){
-		//	typeText("Dealer: Looks like I  won.\nWant to play again? ", 30);
-		//	getline(cin, choice);
-		//}
-	} while (choice.empty() || choice == "Continue" || choice == "continue");
+		do {
+			if (returnDealerDeckValue() > 21 && player.returnDeckValue() <= 21) {
+				typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
+				getline(cin, choice);
+			}
+			else if ((returnDealerDeckValue() <= 21 && returnDealerDeckValue() >= player.returnDeckValue()) || player.returnDeckValue() > 21) {
+				typeText("Dealer: Looks like I won.\nDealer: Want to play again? ", 30);
+				getline(cin, choice);
+			}
+			if (choice.empty() || choice != "Yes" && choice != "yes" && choice != "No" && choice != "no") {
+				typeText("Dealer: Sorry, I did not quite get that.\n", 30);
+				Sleep(1500);
+				system("CLS");
+				choice = "";
+			}
+		}while (choice.empty() || choice != "Yes" && choice != "yes" && choice != "No" && choice != "no");
+	} while (choice == "Yes" || choice == "yes");
 
 	typeText("Dealer: Uh", 30);
 	for (int i = 0; i < 3; i++) {
