@@ -73,6 +73,11 @@ void Player::toggleTurnConcluded() {
 	this->turnConcluded = !(this->turnConcluded);
 }
 
+//Empties the deck attribute.
+void Player::clearDeck() {
+	this->deck.clear();
+}
+
 //Returns deck's total value.
 int Player::returnDeckValue() {
 	int value = 0;

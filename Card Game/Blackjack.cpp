@@ -66,19 +66,32 @@ void Blackjack::displayCards() {
 
 //Blackjack's start method.
 void Blackjack::startGame(Player &player) {						
-	typeText("Dealer: I will now deal the cards.\n",30);
-	Sleep(1500);
 	string choice;
 	
-	//Appends a card to the player then the dealer. Iterates 2 times so that both have 2 cards each.
-	for (int i = 0; i < 2; i++) {
-		player.appendCard(this->shuffledCards.top());
-		this->shuffledCards.pop();
-		appendCard(this->shuffledCards.top());
-		this->shuffledCards.pop();
-	}
-
 	do {
+
+		if (player.returnDeck().size() == 0 && returnDealerDeck().size() == 0) {
+			typeText("Dealer: I will now deal the cards.\n", 30);
+			Sleep(1500);
+			//Appends a card to the player then the dealer. Iterates 2 times so that both have 2 cards each.
+			dealCards(player);
+		}
+		else {
+			typeText("Dealer: I will now deal new cards.\n", 30);
+			Sleep(1500);
+			for (int i = 0; i < player.returnDeck().size() - 1; i++) {
+				this->discardedCards.push(player.returnDeck()[i]);
+			}
+			player.clearDeck();
+
+			for (int i = 0; i < returnDealerDeck().size() - 1; i++) {
+				this->discardedCards.push(returnDealerDeck()[i]);
+			}
+			this->dealerDeck.clear();
+
+			dealCards(player);
+		}
+
 		system("CLS");
 		hitStandPhase(player);
 
@@ -100,7 +113,7 @@ void Blackjack::startGame(Player &player) {
 		}while (choice.empty() || choice != "Yes" && choice != "yes" && choice != "No" && choice != "no");
 	} while (choice == "Yes" || choice == "yes");
 
-	//IF USER DECIDES TO CONTINUE, MUST DISCARD LAST GAME'S HAND AND PROVIDE NEW 2 CARDS FOR THE DEALER AND PLAYER.
+	//Check dev blog for next focus
 
 	typeText("Dealer: Uh", 30);
 	for (int i = 0; i < 3; i++) {
@@ -235,6 +248,16 @@ void Blackjack::toggleTurnConcluded() {
 	this->turnConcluded = !(this->turnConcluded);
 }
 
+//Deals 2 cards to Player and Dealer in alternating order.
+void Blackjack::dealCards(Player& player) {
+	for (int i = 0; i < 2; i++) {
+		player.appendCard(this->shuffledCards.top());
+		this->shuffledCards.pop();
+		appendCard(this->shuffledCards.top());
+		this->shuffledCards.pop();
+	}
+}
+
 //Returns dealerDeck Attribute.
 int Blackjack::returnDealerDeckValue() {
 	int value = 0;
@@ -256,6 +279,11 @@ vector<Card> Blackjack::returnDealerDeck() {
 //Returns shuffledCards Attribute.
 stack<Card> Blackjack::returnShuffledCards() {
 	return this->shuffledCards;
+}
+
+//Returns discardedCards Attribute.
+queue<Card> Blackjack::returnDiscardedCards() {
+	return this->discardedCards;
 }
 
 //Returns turnConcluded Attribute.
