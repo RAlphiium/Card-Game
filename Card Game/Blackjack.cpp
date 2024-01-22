@@ -82,8 +82,6 @@ void Blackjack::startGame(Player &player) {
 		system("CLS");
 		hitStandPhase(player);
 
-		cout << '\n';
-
 		do {
 			if (returnDealerDeckValue() > 21 && player.returnDeckValue() <= 21) {
 				typeText("Dealer: Looks like I lost.\nWant to play again? ", 30);
@@ -102,6 +100,8 @@ void Blackjack::startGame(Player &player) {
 		}while (choice.empty() || choice != "Yes" && choice != "yes" && choice != "No" && choice != "no");
 	} while (choice == "Yes" || choice == "yes");
 
+	//IF USER DECIDES TO CONTINUE, MUST DISCARD LAST GAME'S HAND AND PROVIDE NEW 2 CARDS FOR THE DEALER AND PLAYER.
+
 	typeText("Dealer: Uh", 30);
 	for (int i = 0; i < 3; i++) {
 		cout << ".";
@@ -116,52 +116,68 @@ void Blackjack::hitStandPhase(Player& player) {
 
 	//Loop for player.
 	do {
-		updateVisuals(player);
-		typeText("Dealer: It is your turn. Hit or Stand? ", 30);
-		getline(cin, choice);
-
-		if (choice == "Hit" || choice == "hit") {
-			player.appendCard(this->shuffledCards.top());
-			this->shuffledCards.pop();
-			system("CLS");
-			typeText("Dealer: You have received a [" + player.returnCard(player.returnDeck().size() - 1).returnSymbol() + " of " + player.returnCard(player.returnDeck().size() - 1).returnSuit() + "].\n", 30);
-			Sleep(1500);
-		}
-		else if (choice == "Stand" || choice == "stand") {
-			system("CLS");
+		if (player.returnDeckValue() > 21) {
 			player.toggleTurnConcluded();
-		}
-		else if (choice.empty()) {
-			typeText("Dealer: You gotta make a choice. Try again.", 30);
+			typeText("Dealer: You are over 21.\n", 30);
 			Sleep(1500);
 			system("CLS");
 		}
-		else if (choice != "Hit" && choice != "Stand") {
-			typeText("Dealer: Invalid choice. Try again.", 30);
-			Sleep(1500);
-			system("CLS");
+		else {
+			updateVisuals(player);
+			typeText("Dealer: It is your turn. Hit or Stand? ", 30);
+			getline(cin, choice);
+
+			if (choice == "Hit" || choice == "hit") {
+				player.appendCard(this->shuffledCards.top());
+				this->shuffledCards.pop();
+				system("CLS");
+				typeText("Dealer: You have received a [" + player.returnCard(player.returnDeck().size() - 1).returnSymbol() + " of " + player.returnCard(player.returnDeck().size() - 1).returnSuit() + "].\n", 30);
+				Sleep(1500);
+			}
+			else if (choice == "Stand" || choice == "stand") {
+				system("CLS");
+				player.toggleTurnConcluded();
+			}
+			else if (choice.empty()) {
+				typeText("Dealer: You gotta make a choice. Try again.", 30);
+				Sleep(1500);
+				system("CLS");
+			}
+			else if (choice != "Hit" && choice != "Stand") {
+				typeText("Dealer: Invalid choice. Try again.", 30);
+				Sleep(1500);
+				system("CLS");
+			}
 		}
 	} while (player.returnTurnConcluded() == false);
 
 
 	//Loop for dealer.
 	do {
-		updateVisuals(player);
-		typeText("Dealer: It is my turn.\n", 30);
-		Sleep(1500);
-		if (returnDealerDeckValue() < player.returnDeckValue() && player.returnDeckValue() <= 21) {
-			typeText("Dealer: I will hit.\n", 30);
+		if (returnDealerDeckValue() > 21) {
+			toggleTurnConcluded();
+			typeText("Dealer: Seems like I hit over 21.\n", 30);
 			Sleep(1500);
-			appendCard(this->shuffledCards.top());
-			this->shuffledCards.pop();
 			system("CLS");
-			typeText("Dealer: Looks like I received a [" + returnCard(this->dealerDeck.size() - 1).returnSymbol() + " of " + returnCard(this->dealerDeck.size() - 1).returnSuit() + "].\n", 30);
-			Sleep(1500);
 		}
 		else {
-			typeText("Dealer: I will stand.\n", 30);
+			updateVisuals(player);
+			typeText("Dealer: It is my turn.\n", 30);
 			Sleep(1500);
-			toggleTurnConcluded();
+			if (returnDealerDeckValue() < player.returnDeckValue() && player.returnDeckValue() <= 21) {
+				typeText("Dealer: I will hit.\n", 30);
+				Sleep(1500);
+				appendCard(this->shuffledCards.top());
+				this->shuffledCards.pop();
+				system("CLS");
+				typeText("Dealer: Looks like I received a [" + returnCard(this->dealerDeck.size() - 1).returnSymbol() + " of " + returnCard(this->dealerDeck.size() - 1).returnSuit() + "].\n", 30);
+				Sleep(1500);
+			}
+			else {
+				typeText("Dealer: I will stand.\n", 30);
+				Sleep(1500);
+				toggleTurnConcluded();
+			}
 		}
 	} while (this->turnConcluded == false);
 
