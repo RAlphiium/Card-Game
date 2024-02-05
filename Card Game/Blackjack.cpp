@@ -16,6 +16,7 @@ Blackjack::Blackjack(vector<Card> cardDeck) {
 	this->cardDeck = cardDeck;
 	this->dealerDeck = {};
 	this->turnConcluded = false;
+	this->midgameShuffle = false;
 }
 
 //Typing effect method.
@@ -67,24 +68,69 @@ void Blackjack::displayCards() {
 //Blackjack's start method.
 void Blackjack::startGame(Player &player) {						
 	string choice;
-	
-	do {
 
-		if (player.returnDeck().size() == 0 && returnDealerDeck().size() == 0) {
+	shuffleCards();
+	do {
+		if (midgameShuffle == true) {									//Case: midgame shuffle had occured in the previous game.
+			typeText("Dealer: Since a midgame shuffle occured in the previous game, the cards must be shuffled again.\n", 30);
+			Sleep(1500);
+			typeText("Dealer: I will now deal the cards.\n", 30);
+			Sleep(1500);
+			for (int i = 0; i < player.returnDeck().size(); i++) {		//Discard all cards.
+				this->discardedCards.push(player.returnDeck()[i]);
+			}
+			player.clearDeck();
+
+			for (int i = 0; i < returnDealerDeck().size(); i++) {		//Discard all cards.
+				this->discardedCards.push(returnDealerDeck()[i]);
+			}
+			this->dealerDeck.clear();
+
+			for (int i = 0; i < this->shuffledCards.size(); i++) {		//Discard all cards.
+				this->discardedCards.push(shuffledCards.top());
+				this->shuffledCards.pop();
+			}
+			shuffleCards(this->discardedCards);							//Resets
+			toggleMidgameShuffle();
+			dealCards(player);
+		}
+		else if (this->shuffledCards.size() < 4) {						//Case: there are not enough cards to deal.
+			typeText("Dealer: There are not enough cards to start the next game. All cards will be discarded and shuffled.\n", 30);
+			Sleep(1500);
+			typeText("Dealer: I will now deal the cards.\n", 30);
+			Sleep(1500);
+			for (int i = 0; i < player.returnDeck().size(); i++) {		//Discard all cards.
+				this->discardedCards.push(player.returnDeck()[i]);
+			}
+			player.clearDeck();
+
+			for (int i = 0; i < returnDealerDeck().size(); i++) {		//Discard all cards.
+				this->discardedCards.push(returnDealerDeck()[i]);
+			}
+			this->dealerDeck.clear();
+
+			for (int i = 0; i < this->shuffledCards.size(); i++) {		//Discard all cards.
+				this->discardedCards.push(shuffledCards.top());
+				this->shuffledCards.pop();
+			}
+			shuffleCards(this->discardedCards);							//Resets
+			dealCards(player);
+		}
+		else if (player.returnDeck().size() == 0 && returnDealerDeck().size() == 0) {	//Case: First game.
 			typeText("Dealer: I will now deal the cards.\n", 30);
 			Sleep(1500);
 			//Appends a card to the player then the dealer. Iterates 2 times so that both have 2 cards each.
 			dealCards(player);
 		}
-		else {
+		else if (player.returnDeck().size() != 0 && returnDealerDeck().size() != 0) {	//Case: After completing a game and moving onto a new game.
 			typeText("Dealer: I will now deal new cards.\n", 30);
 			Sleep(1500);
-			for (int i = 0; i < player.returnDeck().size() - 1; i++) {
+			for (int i = 0; i < player.returnDeck().size(); i++) {
 				this->discardedCards.push(player.returnDeck()[i]);
 			}
 			player.clearDeck();
 
-			for (int i = 0; i < returnDealerDeck().size() - 1; i++) {
+			for (int i = 0; i < returnDealerDeck().size(); i++) {
 				this->discardedCards.push(returnDealerDeck()[i]);
 			}
 			this->dealerDeck.clear();
@@ -131,7 +177,7 @@ void Blackjack::hitStandPhase(Player& player) {
 	do {
 		if (player.returnDeckValue() > 21) {
 			player.toggleTurnConcluded();
-			typeText("Dealer: You are over 21.\n", 30);
+			typeText("Dealer: You have busted.\n", 30);
 			Sleep(1500);
 			system("CLS");
 		}
@@ -139,6 +185,13 @@ void Blackjack::hitStandPhase(Player& player) {
 			updateVisuals(player);
 			typeText("Dealer: It is your turn. Hit or Stand? ", 30);
 			getline(cin, choice);
+
+			if (this->shuffledCards.size() == 0) {
+				typeText("Dealer: Seems like there are no more cards to hit. Let's shuffle the discarded cards.\n", 30);
+				Sleep(1500);
+				shuffleCards(this->discardedCards);
+				toggleMidgameShuffle();
+			}
 
 			if (choice == "Hit" || choice == "hit") {
 				player.appendCard(this->shuffledCards.top());
@@ -169,7 +222,7 @@ void Blackjack::hitStandPhase(Player& player) {
 	do {
 		if (returnDealerDeckValue() > 21) {
 			toggleTurnConcluded();
-			typeText("Dealer: Seems like I hit over 21.\n", 30);
+			typeText("Dealer: Seems like I busted.\n", 30);
 			Sleep(1500);
 			system("CLS");
 		}
@@ -177,6 +230,14 @@ void Blackjack::hitStandPhase(Player& player) {
 			updateVisuals(player);
 			typeText("Dealer: It is my turn.\n", 30);
 			Sleep(1500);
+
+			if (this->shuffledCards.size() == 0) {
+				typeText("Dealer: Seems like there are no more cards to hit. Let's shuffle the discarded cards.\n", 30);
+				Sleep(1500);
+				shuffleCards(this->discardedCards);
+				toggleMidgameShuffle();
+			}
+
 			if (returnDealerDeckValue() < player.returnDeckValue() && player.returnDeckValue() <= 21) {
 				typeText("Dealer: I will hit.\n", 30);
 				Sleep(1500);
@@ -193,6 +254,9 @@ void Blackjack::hitStandPhase(Player& player) {
 			}
 		}
 	} while (this->turnConcluded == false);
+
+	cout << "No. of cards in shuffledCards: " << this->shuffledCards.size() << '\n';
+	Sleep(1500);
 
 	player.toggleTurnConcluded();
 	toggleTurnConcluded();
@@ -243,6 +307,28 @@ void Blackjack::shuffleCards() {
 	Sleep(1500);
 }
 
+// This is an overrided function that will shuffle a given deck.
+void Blackjack::shuffleCards(queue<Card> discardedCards) {		// This code work by assuming that shuffledCards is empty as this will only be called when there are no more cards to hit during mid-game.
+	vector<Card> temp;
+	srand((unsigned)time(NULL));
+	int size = discardedCards.size();
+	int randomNumber;
+
+	for (int i = 0; i < size; i++) {
+		temp.push_back(discardedCards.front());					// Appends the front card of the discardedCards queue onto the temporary vector.
+		discardedCards.pop();									// Removes the front card of the discardedCards queue from the queue.
+	}
+
+	for (int j = 0; j < size; j++) {
+		randomNumber = rand() % (size - j);
+
+		swap(temp[randomNumber], temp[size - (j + 1)]);
+	}
+	for (int k = 0; k < size; k++) {
+		this->shuffledCards.push(temp[k]);
+	}
+}
+
 //NOTs the turnConcluded value when called.
 void Blackjack::toggleTurnConcluded() {
 	this->turnConcluded = !(this->turnConcluded);
@@ -256,6 +342,11 @@ void Blackjack::dealCards(Player& player) {
 		appendCard(this->shuffledCards.top());
 		this->shuffledCards.pop();
 	}
+}
+
+//NOTs the midgameShuffle value when called.
+void Blackjack::toggleMidgameShuffle() {
+	this->midgameShuffle = !(this->midgameShuffle);
 }
 
 //Returns dealerDeck Attribute.
@@ -294,4 +385,9 @@ bool Blackjack::returnTurnConcluded() {
 //Returns Card from deck Attribute specified at index: i.
 Card Blackjack::returnCard(int i) {
 	return this->dealerDeck[i];
+}
+
+//Returns midgameShuffle Attribute.
+bool Blackjack::returnMidgameShuffle() {
+	return this->midgameShuffle;
 }

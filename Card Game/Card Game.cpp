@@ -83,7 +83,6 @@ void BlackjackGame() {
     Blackjack blackjack(cardDeck);
     Player player("string");
 
-    blackjack.shuffleCards();
     blackjack.startGame(player);
 
 }

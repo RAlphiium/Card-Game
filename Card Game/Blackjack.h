@@ -14,6 +14,7 @@ private:
 	queue<Card> discardedCards;
 	vector<Card> dealerDeck;
 	bool turnConcluded;
+	bool midgameShuffle;
 public:
 	Blackjack(vector<Card> cardDeck);
 
@@ -26,8 +27,10 @@ public:
 	void viewDealerDeck();										//A Debugger method. Used to check the dealer's cards and their properties.
 	void outputCardDeck();										//This displays all of the possible cards in the Playing Card Suit Deck.
 	void shuffleCards();										//This will update the shuffledDeck attribute by shuffling the cardDeck attribute, store it in a local variable and change its value.
+	void shuffleCards(queue<Card> discardedCards);
 	void toggleTurnConcluded();									//NOTs the turnConcluded value when called.
 	void dealCards(Player& player);								//Deals 2 cards to Player and Dealer in alternating order.
+	void toggleMidgameShuffle();								//NOTs the midgameShuffle value when called.
 
 	int returnDealerDeckValue();								//Returns dealerDeck Attribute.
 	vector<Card> returnDealerDeck();							
@@ -36,5 +39,6 @@ public:
 	queue<Card> returnDiscardedCards();							//Returns discardedCards Attribute.
 	bool returnTurnConcluded();									//Returns turnConcluded Attribute.
 	Card returnCard(int i);										//Returns Card from deck Attribute specified at index: i.
+	bool returnMidgameShuffle();								//Returns midgameShuffle Attribute.
 };
 
