@@ -79,11 +79,17 @@ vector<Card> createDeck() {
     return cardDeck;
 }
 void BlackjackGame() {
-    vector<Card> cardDeck = createDeck();
-    Blackjack blackjack(cardDeck);
-    Player player("string");
+    Deck player("Player");
+    Deck dealer("Dealer");
 
-    blackjack.startGame(player);
+    vector<Card> cardDeck = createDeck();
+    vector<Deck> participants;
+
+    participants = { player,dealer };
+
+    Blackjack blackjack(cardDeck, participants);
+
+    blackjack.startGame();
 
 }
 
@@ -92,8 +98,8 @@ int main()
     string choice;
 
     do {
-        typeText("What game do you want to play?\n",30);
-        typeText("> Blackjack\n> Solitaire\n\nType the name of the game that you want to play: ",30);
+        typeText("What game do you want to play?\n", 30);
+        typeText("> Blackjack\n> Solitaire\n\nType the name of the game that you want to play: ", 30);
         getline(cin, choice);
         if (choice.empty()) {
             typeText("\nInvalid input, retry.", 30);
