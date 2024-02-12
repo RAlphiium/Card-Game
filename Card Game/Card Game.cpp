@@ -90,7 +90,6 @@ void BlackjackGame() {
     Blackjack blackjack(cardDeck, participants);
 
     blackjack.startGame();
-
 }
 
 int main()

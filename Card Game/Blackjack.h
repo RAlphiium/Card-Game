@@ -19,7 +19,7 @@ public:
 
 	void typeText(const string& text, int delayMilliseconds);	//Typing effect method.
 	void shuffleCards();										//This will update the shuffledDeck attribute by shuffling the cardDeck attribute, store it in a local variable and change its value.
-	void shuffleCards(queue<Card> discardedCards);				// This is an overrided function that will shuffle a given deck.
+	void shuffleCards(queue<Card>& discardedCards);				// This is an overrided function that will shuffle a given deck.
 	void dealCards();											//Deals 2 cards to Player and Dealer in alternating order.
 	void startGame();											//Blackjack's start method.
 	void hitStandPhase();										//Hit Stand phase of the game.
@@ -30,7 +30,7 @@ public:
 	vector<Card> returnCardDeck();								//Returns cardDeck Attribute.
 	stack<Card> returnShuffledCards();							//Returns shuffleDeck Attribute.
 	queue<Card> returnDiscardedCards();							//Returns discardedCards Attribute.
-	bool ReturnMidgameShuffle();								//Returns midgameShuffle Attribute.
+	bool returnMidgameShuffle();								//Returns midgameShuffle Attribute.
 
 
 

@@ -51,15 +51,15 @@ void Blackjack::shuffleCards() {
 }
 
 // This is an overrided function that will shuffle a given deck.
-void Blackjack::shuffleCards(queue<Card> discardedCards) {		// This code work by assuming that shuffledCards is empty as this will only be called when there are no more cards to hit during mid-game.
+void Blackjack::shuffleCards(queue<Card>& discardedcards) {		// This code work by assuming that shuffledCards is empty as this will only be called when there are no more cards to hit during mid-game.
 	vector<Card> temp;
 	srand((unsigned)time(NULL));
-	int size = discardedCards.size();
+	int size = discardedcards.size();
 	int randomNumber;
 
 	for (int i = 0; i < size; i++) {
-		temp.push_back(discardedCards.front());					// Appends the front card of the discardedCards queue onto the temporary vector.
-		discardedCards.pop();									// Removes the front card of the discardedCards queue from the queue.
+		temp.push_back(discardedcards.front());					// Appends the front card of the discardedCards queue onto the temporary vector.
+		discardedcards.pop();									// Removes the front card of the discardedCards queue from the queue.
 	}
 
 	for (int j = 0; j < size; j++) {
@@ -71,6 +71,7 @@ void Blackjack::shuffleCards(queue<Card> discardedCards) {		// This code work by
 		this->shuffledCards.push(temp[k]);
 	}
 	typeText("Dealer: The cards have been shuffled using the discarded cards.\n", 30);
+	Sleep(1500);
 }
 
 //Deals 2 cards to Player and Dealer in alternating order.
@@ -176,6 +177,8 @@ void Blackjack::startGame() {
 			}
 		} while (choice.empty() || choice != "Yes" && choice != "yes" && choice != "No" && choice != "no");
 	} while (choice == "Yes" || choice == "yes");
+
+
 
 	//Check dev blog for next focus
 
@@ -313,7 +316,7 @@ queue<Card> Blackjack::returnDiscardedCards() {
 }
 
 //Returns midgameShuffle Attribute.
-bool Blackjack::ReturnMidgameShuffle() {
+bool Blackjack::returnMidgameShuffle() {
 	return this->midgameShuffle;
 }
 
