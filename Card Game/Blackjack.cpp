@@ -32,12 +32,12 @@ void Blackjack::shuffleCards() {
 	vector<Card> temp = this->cardDeck;
 	srand((unsigned)time(NULL));
 	int size = temp.size();
-	int randomnumber;
+	int randomNumber;
 
 	for (int i = 0; i < size; i++) {							// shuffles the cards using fisher yates' algorithm.
-		randomnumber = rand() % (size - i);						/* main feature of fisher yates' algorithm. essentially shifts the "new ending index" towards the starting index so the swapped elements
+		randomNumber = rand() % (size - i);						/* main feature of fisher yates' algorithm. essentially shifts the "new ending index" towards the starting index so the swapped elements
 																at the ending of the list is fixed/untouched*/
-		swap(temp[randomnumber], temp[size - (i + 1)]);
+		swap(temp[randomNumber], temp[size - (i + 1)]);
 	}
 	for (int i = 0; i < size; i++) {
 		this->shuffledCards.push(temp[i]);

@@ -9,6 +9,7 @@
 #include <thread>
 #include "Card.h"
 #include "Blackjack.h"
+#include "Solitaire.h"
 using namespace std::this_thread;
 using namespace std::chrono;
 using namespace std;
@@ -92,6 +93,16 @@ void BlackjackGame() {
     blackjack.startGame();
 }
 
+void SolitaireGame() {
+    vector<Card> cardDeck = createDeck();
+    for (int i = 0; i < cardDeck.size(); i++) {
+        cout << "Suit/Symbol/Value = " << cardDeck[i].returnSuit() << "/" << cardDeck[i].returnSymbol() << "/" << cardDeck[i].returnValue() << '\n';
+    }
+
+    Solitaire solitaire(cardDeck);
+    solitaire.startGame();
+}
+
 int main()
 {
     string choice;
@@ -121,9 +132,14 @@ int main()
         system("CLS");
         BlackjackGame();
     }
-    else if (choice == "Solitaire" || choice == "solitiare") {
+    if (choice == "Solitaire" || choice == "solitaire") {
+        typeText("\nSetting up Solitaire", 30);
+        for (int i = 0; i < 3; i++) {
+            cout << ".";
+            Sleep(1000);
+        }
         system("CLS");
-        cout << "There is nothing here yet.";
+        SolitaireGame();
     }
     return 0;
 }
