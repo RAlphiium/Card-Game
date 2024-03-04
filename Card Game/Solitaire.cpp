@@ -44,22 +44,21 @@ void Solitaire::shuffleCards() {
 
 //Displays all of the cards; format: 4 rows, 13 columns.
 void Solitaire::displayCards() {
-	vector<Card> temp = this->cardDeck;//this->shuffledDeck;							//Only displays, does not change values.
+	vector<Card> temp = this->cardDeck;//this->shuffledDeck;					//Only displays, does not change values.
 	int size = temp.size();											//No. of cards in shuffledDeck.
-	int asciiCardSize = this->cardDeck[0].returnAsciiCard().size();	//No. of lines in ascii card.
+	int asciiCardSize = this->cardDeck[0].returnAsciiCard().size();	//No. of lines in ascii card (14)
 	vector<string> asciiStrings;
 	string placeHolder;
-	int maxRows;													//Max number of rows that have exactly 13 cards.
+
+	int maxRows = size / 13;													//Max number of rows that have exactly 13 cards.
+	int columns = 13;
+	int previous = 0;
+	int next = 13;
 
 	// Removes all skip lines for every ascii card except from last.
 	for (int i = 0; i < size; i++) {
 		if (i == 12 || i == 25 || i == 38 || i == 51) {
 			continue;
-		}
-		if (size != 52) {
-			if (i == size - 1) {
-				continue;
-			}
 		}
 		else {
 			temp[i].eraseLine();
@@ -68,14 +67,28 @@ void Solitaire::displayCards() {
 
 	//Since I am displaying the cards in the format: 4 rows & 13 columns, check if can be split into portions of 13.
 	//This will display all of the rows that have 13 cards in it.
-	maxRows = size / 13;
-	//for the no. of rows up to maxrows.
-
-
-	for (int i = 0; i < maxRows; i++) {
+	for (int i = 0; i < maxRows; i++) {												//for the no. of rows up to maxrows.
+		next = columns * (i + 1);													//moves to the next 13 cards
+		//cout << "previous/next: " << previous << "/" << next << '\n';				//Debugger
 		for (int j = 0; j < asciiCardSize; j++) {
-			for (int k = 0; k < 13; k++) {
-				placeHolder = placeHolder + temp[k].returnAsciiLine(j);
+			for (int k = previous; k < next; k++) {
+				placeHolder = placeHolder + temp[k].returnAsciiLine(j);				//concatenates the all of the lines at line j for all of the cards k
+			}
+			//Appends to string list that contains all of the lines together.
+			asciiStrings.push_back(placeHolder);
+			//Resets the variable.
+			placeHolder = "";														
+		}
+		previous = next;															//starting index becomes previous next.
+	}
+
+	if (size < 52) {																//If total cards != 52, must be rearranged.
+		for (int i = 0; i < asciiCardSize; i++) {									
+			for (int j = next; j < size; j++) {										//next = highest possible row of 13 cards size = total number of cards.
+				placeHolder = placeHolder + temp[j].returnAsciiLine(i);				//concatenates the all of the lines at line j for all of the cards k
+				if (j == size - 1) {												//Adds a new line (\n) at every ascii string of the last card of the deck.
+					placeHolder = placeHolder + "\n";								//Concatenates "\n" to the last card's ascii strings.
+				}
 			}
 			//Appends to string list that contains all of the lines together.
 			asciiStrings.push_back(placeHolder);
@@ -84,31 +97,6 @@ void Solitaire::displayCards() {
 		}
 	}
 
-
-	//for (int i = 0; i < maxRows; i++) {
-	//	for (int j = 0; j < asciiCardSize; j++) {
-	//		for (int k = 0; k < 13; k++) {
-	//			placeHolder = placeHolder + temp[k].returnAsciiLine(j);
-	//		}
-	//		//Appends to string list that contains all of the lines together.
-	//		asciiStrings.push_back(placeHolder);
-	//		//Resets the variable.
-	//		placeHolder = "";
-	//	}
-	//}
-	//
-	////Will display the row that does not have 13 cards.
-	//for (int i = (size - ((maxRows * 13) + 1)); i < size; i++) {
-	//	for (int j = 0; j < asciiCardSize; j++) {
-	//		for (int k = 0; k < (size - (maxRows * 13)); k++) {
-	//			placeHolder = placeHolder + temp[k].returnAsciiLine(j);
-	//		}
-	//		//Appends to string list that contains all of the lines together.
-	//		asciiStrings.push_back(placeHolder);
-	//		//Resets the variable.
-	//		placeHolder = "";
-	//	}
-	//}
 	for (int i = 0; i < asciiStrings.size(); i++) {
 		cout << asciiStrings[i];
 	}
@@ -116,6 +104,9 @@ void Solitaire::displayCards() {
 
 // Solitaire's start method:
 void Solitaire::startGame() {
+	typeText("Please zoom out in order to view all of the cards that will be displayed to you shortly.", 30);
+	Sleep(3000);
+	system("CLS");
 	displayCards();
 	/*Should have a function that will display all cards:
 	lets do 4 rows, 13 columns

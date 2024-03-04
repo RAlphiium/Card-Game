@@ -95,9 +95,6 @@ void BlackjackGame() {
 
 void SolitaireGame() {
     vector<Card> cardDeck = createDeck();
-    for (int i = 0; i < cardDeck.size(); i++) {
-        cout << "Suit/Symbol/Value = " << cardDeck[i].returnSuit() << "/" << cardDeck[i].returnSymbol() << "/" << cardDeck[i].returnValue() << '\n';
-    }
 
     Solitaire solitaire(cardDeck);
     solitaire.startGame();
