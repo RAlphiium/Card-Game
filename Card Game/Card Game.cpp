@@ -130,7 +130,7 @@ int main()
         BlackjackGame();
     }
     if (choice == "Solitaire" || choice == "solitaire") {
-        typeText("\nSetting up Solitaire", 30);
+        typeText("\nSetting up Solitaire: Decade", 30);
         for (int i = 0; i < 3; i++) {
             cout << ".";
             Sleep(1000);
