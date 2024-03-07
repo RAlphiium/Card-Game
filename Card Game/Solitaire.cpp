@@ -27,6 +27,7 @@ void Solitaire::typeText(const string& text, int delayMilliseconds) {
 // This will store the shuffled card deck in a local variable, which will be used to update the shuffledDeck attribute.
 void Solitaire::shuffleCards() {	
 	vector<Card> temp = this->cardDeck;
+	srand((unsigned)time(NULL));
 	int size = temp.size();
 	int randomNumber;
 
@@ -181,15 +182,27 @@ void Solitaire::checkCards(string previousSelect) {
 				invalid = true;
 			}
 		}
-		for (int k = 0; k < cardIndexs.size() - 1; k++) {											//Checks if any duplicate indexs have been inputted.
+		for (int k = 0; k < cardIndexs.size(); k++) {											//Checks if any duplicate indexs have been inputted.
 			total = total + this->shuffledDeck[cardIndexs[k]].returnValue();
 		}
-		cout << "total: " << total << '\n';
 		if (total != 10 && total != 20 && total != 30) {
 			cout << "invalid total" << "\n";
 			invalid = true;
 		}
 	}
+
+	//debugger
+	//cout << "Indexs selected: ";
+	//for (int i = 0; i < cardIndexs.size(); i++) {
+	//	cout << cardIndexs[i] << " ";
+	//}
+	//cout << '\n';
+	//cout << "Numbers selected: ";
+	//for (int i = 0; i < cardIndexs.size(); i++) {
+	//	cout << this->shuffledDeck[cardIndexs[i]].returnSymbol() << " ";
+	//}
+	//cout << "\ntotal = " << total << '\n';
+
 
 	if (invalid == true) {
 		typeText("An invalid input has been entered. Try again.", 30);
