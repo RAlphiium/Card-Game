@@ -42,17 +42,39 @@ void Solitaire::shuffleCards() {
 	Sleep(1500);
 }
 
+//This function will be used to sort the list in ascending order.
+vector<int> Solitaire::bubbleSort(vector<int> list) {
+	vector<int> localList = list;
+	int size = localList.size();
+	bool change = false;
+	int temp;
+
+	do {
+		change = false;								//If a switch occurs within an iteration of a while loop, change will be set to true - indicating that the bubble sort requires another iteration.
+		for (int i = 0; i < size - 1; i++) {
+			if (localList[i] > localList[i + 1]) {
+				change = true;
+				temp = localList[i + 1];
+				localList[i + 1] = localList[i];
+				localList[i] = temp;
+			}
+		}
+	} while (change == true);						//Loops until a change does not occur for a while while iteration
+
+	return localList;								//returns sorted vector.
+}
+
 //Displays all of the cards; format: 4 rows, 13 columns.
 void Solitaire::displayCards() {
-	vector<Card> temp = this->cardDeck;//this->shuffledDeck;					//Only displays, does not change values.
-	int size = temp.size();											//No. of cards in shuffledDeck.
-	int asciiCardSize = this->cardDeck[0].returnAsciiCard().size();	//No. of lines in ascii card (14)
+	vector<Card> temp = this->shuffledDeck;					//Only displays, does not change values.
+	int size = temp.size();														//No. of cards in shuffledDeck.
+	int asciiCardSize = this->cardDeck[0].returnAsciiCard().size();				//No. of lines in ascii card (14)
 	vector<string> asciiStrings;
 	string placeHolder;
 
 	int checker = 1;
 	int columns = this->columns;
-	int maxRows = size / columns;													//Max number of rows that have exactly 13 cards.
+	int maxRows = size / columns;												//Max number of rows that have exactly 13 cards.
 	int previous = 0;
 	int next = 13;
 
@@ -67,18 +89,7 @@ void Solitaire::displayCards() {
 		}
 	}
 
-	//// Removes all skip lines for every ascii card except from last. (only applies to if each row had 13 cards.
-	//for (int i = 0; i < size; i++) {
-	//	if (i == 12 || i == 25 || i == 38 || i == 51) {
-	//		continue;
-	//	}
-	//	else {
-	//		temp[i].eraseLine();
-	//	}
-	//}
-
-	//Since I am displaying the cards in the format: 4 rows & 13 columns, check if can be split into portions of 13.
-	//This will display all of the rows that have 13 cards in it.
+	//Will display all rows of max columns.
 	for (int i = 0; i < maxRows; i++) {												//for the no. of rows up to maxrows.
 		next = columns * (i + 1);													//moves to the next 13 cards
 		//cout << "previous/next: " << previous << "/" << next << '\n';				//Debugger
@@ -119,6 +130,7 @@ void Solitaire::checkCards(string previousSelect) {
 	string number;
 	vector<int> cardIndexs = {};
 	bool invalid = false;
+	int total = 0;
 	//First, separate the numbers from the commas and/or strings.
 	//Second, convert the numbers into integers, subtract 1 from each number inputted to find index number, and store in the vector list.
 	//third, sort the numbers in ascending order.
@@ -128,20 +140,20 @@ void Solitaire::checkCards(string previousSelect) {
 	//This will collect all strings numbers, convert into integers and subtract 1 from the collected integers to find index numbers.
 	do {
 		if (select[0] == ' ' || select[0] == ',') {
-			select.erase(select.begin());								//Removes the character from the string.
+			select.erase(select.begin());														//Removes the character from the string.
 			if (stoi(number) - 1 < 0 || stoi(number) - 1 > this->shuffledDeck.size()-1) {
 				invalid = true;
 			}
 			else {
-				cardIndexs.push_back(stoi(number) - 1);					//String number is converted into integer number and is pushed onto the vector list.
-				number = "";											//variable is reset for the next number.
+				cardIndexs.push_back(stoi(number) - 1);											//String number is converted into integer number and is pushed onto the vector list.
+				number = "";																	//variable is reset for the next number.
 			}
 		}
 		else {
-			number = number + select[0];								//Concatenates current character onto the string variable.
-			select.erase(select.begin());								//Removes the character from the select string variable.
-			if (select.size() == 0) {									//There isn't a moment for the last index to be pushed onto the vector; this is a insurance.
-				if (stoi(number) - 1 < 0 || stoi(number) - 1 > this->shuffledDeck.size()-1) {	//Checks if the number is an appropiate index.
+			number = number + select[0];														//Concatenates current character onto the string variable.
+			select.erase(select.begin());														//Removes the character from the select string variable.
+			if (select.size() == 0) {															//There isn't a moment for the last index to be pushed onto the vector; this is a insurance.
+				if (stoi(number) - 1 < 0 || stoi(number) - 1 > this->shuffledDeck.size()-1) {	//Checks if the number is an appropiate index (accepts value if it is greater than 0 and lesser than or equal to max cards)
 					invalid = true;
 				}
 				else {
@@ -149,21 +161,41 @@ void Solitaire::checkCards(string previousSelect) {
 				}
 			}
 		}
-	} while (select.size() != 0);								//Will repeat until there are no more characters in this string variable.
+	} while (select.size() != 0);																//Will repeat until there are no more characters in this string variable.
 
 	//NEXT: sort the numbers in ascending order and check if there are any duplicate indexs.
+	if (invalid != true) {
+		if (cardIndexs.size() < 2) {																//Checks if at least 2 cards have been selected.
+			invalid = true;
+		}
+		cardIndexs = bubbleSort(cardIndexs);														//Takes the vector cardIndexs and bubble sorts the values in ascending order.
+		for (int i = 0; i < cardIndexs.size() - 1; i++) {											//Checks if the selected cards are adjacent to each other.
+			if (abs(cardIndexs[i] - cardIndexs[i + 1]) != 1) {										//Works by subtracting the indexs from one another in their sorted arrangement. If they are sorted, the result should always be equal to 1.
+				cout << "not consecutive" << "\n";
+				invalid = true;
+			}
+		}
+		for (int j = 0; j < cardIndexs.size() - 1; j++) {											//Checks if any duplicate indexs have been inputted.
+			if (cardIndexs[j] == cardIndexs[j + 1]) {												//Since the list is sorted, any potential duplicates should be adjacent to one another.
+				cout << "duplicate found" << "\n";
+				invalid = true;
+			}
+		}
+		for (int k = 0; k < cardIndexs.size() - 1; k++) {											//Checks if any duplicate indexs have been inputted.
+			total = total + this->shuffledDeck[cardIndexs[k]].returnValue();
+		}
+		cout << "total: " << total << '\n';
+		if (total != 10 && total != 20 && total != 30) {
+			cout << "invalid total" << "\n";
+			invalid = true;
+		}
+	}
 
 	if (invalid == true) {
 		typeText("An invalid input has been entered. Try again.", 30);
 		Sleep(3000);
 		system("CLS");
 		displayCards();
-	}
-	else {
-		for (int i = 0; i < cardIndexs.size(); i++) {
-			cout << cardIndexs[i] << '\n';
-			Sleep(3000);
-		}
 	}
 }
 
