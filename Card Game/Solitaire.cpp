@@ -107,7 +107,10 @@ void Solitaire::displayCards() {
 	}
 
 	//if this->shuffledDeck.size() < 13, will not display cards.
-	if ((maxRows*columns) != 52) {													//If total cards != 52 or incomplete rows (case where 52 is not divisible by columns value), must be rearranged.
+	if ((maxRows*columns) != 52 || size < 13) {													//If total cards != 52 or incomplete rows (case where 52 is not divisible by columns value), must be rearranged.
+		if (size < 13) {
+			next = 0;
+		}
 		for (int i = 0; i < asciiCardSize; i++) {									
 			for (int j = next; j < size; j++) {										//next = highest possible row of 13 cards size = total number of cards.
 				placeHolder = placeHolder + temp[j].returnAsciiLine(i);				//concatenates all of the lines at line i for all of the cards j
@@ -242,7 +245,7 @@ void Solitaire::selectCards() {
 
 	do {
 		cout << "Type 'Refresh' to take the time to resize the terminal and to reload the visuals.\n";
-		typeText("Type 1-" + to_string(this->shuffledDeck.size()) + " to select a card and place ',' or ' ' in between your card numbers to select more: ", 30);
+		typeText("Type 1-" + to_string(this->shuffledDeck.size()) + " to select a card and place ',' or ' ' in between your cards' ordinal number to select more: ", 30);
 		getline(cin, select);
 
 		if (select == "refresh" || select == "Refresh") {
@@ -299,6 +302,7 @@ void Solitaire::startGame() {
 	system("CLS");
 
 	shuffleCards();
+	this->shuffledDeck.erase(this->shuffledDeck.begin() + 7, this->shuffledDeck.begin()+51);
 	do {
 		displayCards();
 		selectCards();
