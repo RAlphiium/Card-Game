@@ -248,7 +248,7 @@ void Solitaire::selectCards() {
 		typeText("Type 1-" + to_string(this->shuffledDeck.size()) + " to select a card and place ',' or ' ' in between your cards' ordinal number to select more: ", 30);
 		getline(cin, select);
 
-		if (select == "refresh" || select == "Refresh") {
+		if (select == "refresh" || select == "Refresh") {								//Typing these accepted values will redisplay the card visuals to the player again.
 			typeText("Refreshing", 30);
 			for (int i = 0; i < 3; i++) {
 				cout << ".";
@@ -258,24 +258,24 @@ void Solitaire::selectCards() {
 			displayCards();
 		}
 		else {
-			indexs = checkCards(select);
-			if (indexs[0] == 0 && indexs.size() == 1) {									//Necessary checker if checkCards somehow returns only {0}.
-				indexs.erase(indexs.begin());
-				cout << "Check2";														//Debug
+			indexs = checkCards(select);																		//Summary: Stores inputted values into indexs if valid. If invalid, will only store {0}
+			if (indexs[0] == 0 && indexs.size() == 1) {															//Necessary checker if checkCards somehow returns only {0}. Will happen if inputted values were deemed invalid.
+				indexs.erase(indexs.begin());																	//Resets the variable indexs.
+				cout << "Check2";																				//Debug
 				Sleep(1500);
 			}
 			else {
-				min = *min_element(indexs.begin(), indexs.end());
-				max = *max_element(indexs.begin(), indexs.end());
-				for (int i = 0; i < indexs.size(); i++) {
+				min = *min_element(indexs.begin(), indexs.end());												//Finds the smallest index in the unsorted vector.
+				max = *max_element(indexs.begin(), indexs.end());												//Finds the largest index in the unsorted vector.
+				for (int i = 0; i < indexs.size(); i++) {														//Debug
 					cout << indexs[i] << " ";
 				}
 
-				this->shuffledDeck.erase(this->shuffledDeck.begin()+min, this->shuffledDeck.begin()+max+1);
-				cout << "Check1";														//Debug
+				this->shuffledDeck.erase(this->shuffledDeck.begin()+min, this->shuffledDeck.begin()+max+1);		//NEED TO STORE THE SELECTED CARDS INTO DISCARDED CARDS BEFORE ERASING THEM FROM SHUFFLEDDECK!!
+				cout << "Check1";																				//Debug
 				Sleep(1500);
 			}
-			cout << "\nShuffledDeck: " << this->shuffledDeck.size();						//Debug
+			cout << "\nShuffledDeck: " << this->shuffledDeck.size();											//Debug
 			Sleep(1500);
 			system("CLS");
 			displayCards();
@@ -302,7 +302,6 @@ void Solitaire::startGame() {
 	system("CLS");
 
 	shuffleCards();
-	this->shuffledDeck.erase(this->shuffledDeck.begin() + 7, this->shuffledDeck.begin()+51);
 	do {
 		displayCards();
 		selectCards();
