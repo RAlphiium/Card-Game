@@ -225,7 +225,6 @@ void Solitaire::selectCards() {
 	string select;
 	int min, max;
 	vector<int> indexs;
-	typeText("All 52 cards are placed in a sequence from left to right and top to bottom.\n", 30);
 	
 	/*Conditions for successful select:
 		- At least 2 consecutive cards have been selected.
@@ -244,8 +243,8 @@ void Solitaire::selectCards() {
 	*/
 
 	do {
-		cout << "Type 'Refresh' to take the time to resize the terminal and to reload the visuals.\n";
-		typeText("Type 1-" + to_string(this->shuffledDeck.size()) + " to select a card and place ',' or ' ' in between your cards' ordinal number to select more: ", 30);
+		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n",30);
+		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 30);
 		getline(cin, select);
 
 		if (select == "refresh" || select == "Refresh") {								//Typing these accepted values will redisplay the card visuals to the player again.
@@ -256,6 +255,22 @@ void Solitaire::selectCards() {
 			}
 			system("CLS");
 			displayCards();
+		}
+		else if (select == "rules" || select == "Rules") {
+			typeText("\nSolitaire: Decade is a type of Solitaire game that uses a single set of standard Playing Cards.\nThe single set of standard Playing Cards are randomly shuffled and distributed in a sequence which places the cards from left to right and top to bottom.\nThese cards will be faced up when placed down.\nYou, as the Player, must discard all 52 cards to win.", 30);
+			typeText("\n\nPress enter to continue.", 30);
+			getline(cin, select);
+			cout << select.size();
+			if (select.size() == 0) {
+				system("CLS");
+				displayCards();
+				continue;
+			}
+		}
+		else if (select == "") {
+			system("CLS");
+			displayCards();
+			continue;
 		}
 		else {
 			indexs = checkCards(select);																		//Summary: Stores inputted values into indexs if valid. If invalid, will only store {0}
