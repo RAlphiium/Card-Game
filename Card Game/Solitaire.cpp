@@ -128,6 +128,18 @@ void Solitaire::displayCards() {
 	for (int i = 0; i < asciiStrings.size(); i++) {
 		cout << asciiStrings[i];
 	}
+
+	if (this->discardedCards.size() > 0) {											//Checks if there are any cards in the discarded stack.
+		string borderLine = " ";													//If there are cards in the discarded stack, creates a border between non-discarded cards and discarded cards. Length of border is determined by no. columns.
+		for (int i = 0; i < this->columns-1; i++) {
+			borderLine = borderLine + "=====================" + "==";				
+		}
+		borderLine = borderLine + "=====================";
+
+		cout << '\n' << borderLine << '\n' << " Discarded Stack: (" << this->discardedCards.size() << ")\n";
+		this->discardedCards.top().displayCard();
+		cout << '\n';
+	}
 }
 //This function will be used to check if the selected cards meet the conditions: selected 2 consecutive cards & total cards = 10,20 or 30.
 vector<int> Solitaire::checkCards(string previousSelect) {
@@ -243,8 +255,8 @@ void Solitaire::selectCards() {
 	*/
 
 	do {
-		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n",30);
-		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 30);
+		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n",15);
+		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 15);
 		getline(cin, select);
 
 		if (select == "refresh" || select == "Refresh") {								//Typing these accepted values will redisplay the card visuals to the player again.
@@ -286,7 +298,8 @@ void Solitaire::selectCards() {
 					cout << indexs[i] << " ";
 				}
 
-				this->shuffledDeck.erase(this->shuffledDeck.begin()+min, this->shuffledDeck.begin()+max+1);		//NEED TO STORE THE SELECTED CARDS INTO DISCARDED CARDS BEFORE ERASING THEM FROM SHUFFLEDDECK!!
+				discardCards(indexs);																			//Appends the about-to-be-erased cards to the discarded stack: discardedCards
+				this->shuffledDeck.erase(this->shuffledDeck.begin()+min, this->shuffledDeck.begin()+max+1);
 				cout << "Check1";																				//Debug
 				Sleep(1500);
 			}
@@ -323,6 +336,12 @@ void Solitaire::startGame() {
 	} while (this->shuffledDeck.size() != 0);
 }
 
+void Solitaire::discardCards(vector<int> indexs) {																	//Last element in the vector will be the top of the stack.
+	for (int i = 0; i < indexs.size(); i++) {																		//Appends the about-to-be-erased cards to the discarded stack: discardedCards
+		this->discardedCards.push(this->shuffledDeck[indexs[i]]);		
+	}
+}
+
 //Returns cardDeck attribute.
 vector<Card> Solitaire::returnCardDeck() {
 	return this->cardDeck;
@@ -334,7 +353,7 @@ vector<Card> Solitaire::returnShuffledDeck() {
 }
 
 //Returns discardedCards attribute.
-queue<Card> Solitaire::returnDiscardedCards() {
+stack<Card> Solitaire::returnDiscardedCards() {
 	return this->discardedCards;
 }
 

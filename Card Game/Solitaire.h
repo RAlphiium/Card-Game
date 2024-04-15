@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <queue>
+#include <stack>
 #include "Card.h"
 #include "Deck.h"
 
@@ -9,7 +9,7 @@ class Solitaire{
 private:
 	vector<Card> cardDeck;
 	vector<Card> shuffledDeck;
-	queue<Card> discardedCards;
+	stack<Card> discardedCards;
 	int columns;
 public:
 	Solitaire(vector<Card> cardDeck);
@@ -21,10 +21,11 @@ public:
 	void displayCards();										//Displays all of the cards; format: 4 rows, 13 columns.
 	void selectCards();
 	void startGame();											//Solitaire's start method.
+	void discardCards(vector<int> indexs);
 
 	vector<Card> returnCardDeck();								//Returns cardDeck attribute.
 	vector<Card> returnShuffledDeck();							//Returns shuffledDeck attribute.
-	queue<Card> returnDiscardedCards();							//Returns discardedCards attribute.
+	stack<Card> returnDiscardedCards();							//Returns discardedCards attribute.
 	int returnColumns();										//Returns columns attribute.
 };
 
