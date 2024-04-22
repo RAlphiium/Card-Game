@@ -125,7 +125,7 @@ void Solitaire::displayCards() {
 		}
 	}
 
-	for (int i = 0; i < asciiStrings.size(); i++) {
+	for (int i = 0; i < asciiStrings.size(); i++) {								
 		cout << asciiStrings[i];
 	}
 
@@ -136,8 +136,8 @@ void Solitaire::displayCards() {
 		}
 		borderLine = borderLine + "=====================";
 
-		cout << '\n' << borderLine << '\n' << " Discarded Stack: (" << this->discardedCards.size() << ")\n";
-		this->discardedCards.top().displayCard();
+		cout << '\n' << borderLine << '\n' << " Discarded Stack: (" << this->discardedCards.size() << ")\n";		//debug
+		this->discardedCards.top().displayCard();	
 		cout << '\n';
 	}
 }
@@ -189,13 +189,13 @@ vector<int> Solitaire::checkCards(string previousSelect) {
 		temp = bubbleSort(cardIndexs);															//Takes the vector cardIndexs and bubble sorts the values in ascending order.
 		for (int i = 0; i < temp.size() - 1; i++) {												//Checks if the selected cards are adjacent to each other.
 			if (abs(temp[i] - temp[i + 1]) != 1) {												//Works by subtracting the indexs from one another in their sorted arrangement. If they are sorted, the result should always be equal to 1.
-				cout << "not consecutive" << "\n";
+				//cout << "not consecutive" << "\n";											//debug
 				invalid = true;
 			}
 		}
 		for (int j = 0; j < temp.size() - 1; j++) {												//Checks if any duplicate indexs have been inputted.
 			if (temp[j] == temp[j + 1]) {														//Since the list is sorted, any potential duplicates should be adjacent to one another.
-				cout << "duplicate found" << "\n";
+				//cout << "duplicate found" << "\n";											//debug
 				invalid = true;
 			}
 		}
@@ -203,7 +203,7 @@ vector<int> Solitaire::checkCards(string previousSelect) {
 			total = total + this->shuffledDeck[cardIndexs[k]].returnValue();
 		}	
 		if (total != 10 && total != 20 && total != 30) {										//Checks if total is equal to 10,20 or 30.
-			cout << "invalid total" << "\n";
+			//cout << "invalid total" << "\n";													//debug
 			invalid = true;
 		}
 	}
@@ -255,7 +255,7 @@ void Solitaire::selectCards() {
 	*/
 
 	do {
-		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n",15);
+		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n > 'Undo' to take back your previous play.\n",15);
 		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 15);
 		getline(cin, select);
 
@@ -279,6 +279,23 @@ void Solitaire::selectCards() {
 				continue;
 			}
 		}
+		else if (select == "Undo" || select == "undo") {														//When user types '[U/u]ndo', this accesses saveSlots attribute and takes the most recent save from top and replaces new attributes with old.
+			if (this->saveSlots.size() > 0) {
+				this->shuffledDeck = this->saveSlots.top().oldShuffledDeck;
+				this->discardedCards = this->saveSlots.top().oldDiscardedCards;
+				this->saveSlots.pop();
+			}
+			else {
+				typeText("\nThere are no saves to go back to.", 30);
+				Sleep(1500);
+				system("CLS");
+				displayCards();
+				continue;
+			}
+			system("CLS");
+			displayCards();
+			continue;
+		}
 		else if (select == "") {
 			system("CLS");
 			displayCards();
@@ -288,26 +305,31 @@ void Solitaire::selectCards() {
 			indexs = checkCards(select);																		//Summary: Stores inputted values into indexs if valid. If invalid, will only store {0}
 			if (indexs[0] == 0 && indexs.size() == 1) {															//Necessary checker if checkCards somehow returns only {0}. Will happen if inputted values were deemed invalid.
 				indexs.erase(indexs.begin());																	//Resets the variable indexs.
-				cout << "Check2";																				//Debug
-				Sleep(1500);
+				//cout << "Check2";																				//Debug
+				//Sleep(1500);
 			}
 			else {
 				min = *min_element(indexs.begin(), indexs.end());												//Finds the smallest index in the unsorted vector.
 				max = *max_element(indexs.begin(), indexs.end());												//Finds the largest index in the unsorted vector.
-				for (int i = 0; i < indexs.size(); i++) {														//Debug
-					cout << indexs[i] << " ";
-				}
+				//for (int i = 0; i < indexs.size(); i++) {														//Debug
+				//	cout << indexs[i] << " ";
+				//}
+
+				saves saveSlot;																					//Creates a struct variable to hold old solitaire attribute values
+				saveSlot.oldShuffledDeck = this->shuffledDeck;													//stores old shuffledCard to struct oldShuffledCard attribute
+				saveSlot.oldDiscardedCards = this->discardedCards;												//stores old discardedCards to struct oldDiscardedCards attribute
+				this->saveSlots.push(saveSlot);																	//Appends struct variable to solitaire's saveSlots attribute
 
 				discardCards(indexs);																			//Appends the about-to-be-erased cards to the discarded stack: discardedCards
+
 				this->shuffledDeck.erase(this->shuffledDeck.begin()+min, this->shuffledDeck.begin()+max+1);
-				cout << "Check1";																				//Debug
-				Sleep(1500);
+				//cout << "Check1";																				//Debug
+				//Sleep(1500);
 			}
-			cout << "\nShuffledDeck: " << this->shuffledDeck.size();											//Debug
-			Sleep(1500);
+			//cout << "\nShuffledDeck: " << this->shuffledDeck.size();											//Debug
+			//Sleep(1500);
 			system("CLS");
 			displayCards();
-
 		}
 	} while (this->shuffledDeck.size() != 0);
 }
@@ -334,6 +356,9 @@ void Solitaire::startGame() {
 		displayCards();
 		selectCards();
 	} while (this->shuffledDeck.size() != 0);
+
+	typeText("You win!", 30);
+	Sleep(3000);
 }
 
 void Solitaire::discardCards(vector<int> indexs) {																	//Last element in the vector will be the top of the stack.

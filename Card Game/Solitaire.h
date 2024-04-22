@@ -5,11 +5,17 @@
 #include "Card.h"
 #include "Deck.h"
 
+struct saves {
+	vector<Card> oldShuffledDeck;								//Previous shuffledDeck
+	stack<Card> oldDiscardedCards;								//Previous discardedCards
+};
+
 class Solitaire{
 private:
-	vector<Card> cardDeck;
-	vector<Card> shuffledDeck;
-	stack<Card> discardedCards;
+	vector<Card> cardDeck;										//Untouched standard playing cards.
+	vector<Card> shuffledDeck;									//Randomly shuffled playing cards.
+	stack<Card> discardedCards;									//Stack to hold discarded cards.
+	stack<saves> saveSlots;										//Stack to hold saves.
 	int columns;
 public:
 	Solitaire(vector<Card> cardDeck);
