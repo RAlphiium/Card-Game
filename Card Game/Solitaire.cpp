@@ -47,7 +47,7 @@ void Solitaire::shuffleCards() {
 vector<int> Solitaire::bubbleSort(vector<int> list) {
 	vector<int> localList = list;
 	int size = localList.size();
-	bool change = false;
+	bool change = false;	
 	int temp;
 
 	do {
@@ -159,7 +159,10 @@ vector<int> Solitaire::checkCards(string previousSelect) {
 	do {
 		if (select[0] == ' ' || select[0] == ',') {
 			select.erase(select.begin());														//Removes the character from the string.
-			if (stoi(number) - 1 < 0 || stoi(number) - 1 > this->shuffledDeck.size()-1) {
+			if (number.length() == 0) {															//Checks if there is any characters in here.
+				continue;
+			}
+			if (stoi(number) - 1 < 0 || stoi(number) - 1 > this->shuffledDeck.size()-1) {		//Checks if index is lesser than 0 or if index is greater than the maximum index
 				invalid = true;
 			}
 			else {
@@ -255,8 +258,8 @@ void Solitaire::selectCards() {
 	*/
 
 	do {
-		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n > 'Undo' to take back your previous play.\n",15);
-		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 15);
+		typeText("Type:\n\n > 'Refresh' to provide the time to resize the terminal and to reload the visuals.\n > 'Rules' to display a textual guide for Solitaire: Decade.\n > 'Undo' to take back your previous play.\n",10);
+		typeText(" > '1-" + to_string(this->shuffledDeck.size()) + "' to select a card and place ',' or ' ' in between your cards' ordinal number to select more.\n\nType here: ", 10);
 		getline(cin, select);
 
 		if (select == "refresh" || select == "Refresh") {								//Typing these accepted values will redisplay the card visuals to the player again.
